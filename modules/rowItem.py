@@ -1,6 +1,7 @@
 import time
 import http.client
 import json
+import concurrent.futures
 
 connection = http.client.HTTPSConnection("swapi.dev")
 
@@ -10,9 +11,15 @@ class ListItem(object):
     def __init__(self, character):
         self.name = character["name"]
         self.gender = character["gender"]
-        self.speciesName, self.averagelifeSpan = self.getSpeciesNameSpan(character["species"])
-        self.homePlanet = self.getHomePlanet(character["homeworld"])
-        self.movieList = self.getMoviesList(character["films"])
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future = executor.submit(self.getSpeciesNameSpan, character["species"])
+            self.speciesName, self.averagelifeSpan = future.result()
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future = executor.submit(self.getHomePlanet, character["homeworld"])
+            self.homePlanet = future.result()
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future = executor.submit(self.getMoviesList, character["films"])
+            self.movieList = future.result()
 
     def getSpeciesNameSpan(self, speciesList):
         startTime = time.time()

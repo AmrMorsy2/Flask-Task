@@ -4,6 +4,8 @@ from flask_table import Table, Col
 import json
 import time
 from modules import rowItem
+import gevent
+import multiprocessing
 import http.client
 
 
@@ -22,7 +24,6 @@ class ItemTable(Table):
     movieList = Col('Movies')
 
 
-
 @app.route('/')
 def homeDirectory():
     return render_template('homeSearch/index.html')
@@ -39,16 +40,16 @@ def searchByName():
         return render_template('homeSearch/index.html')
     connection.request('GET', '/api/people/?search=' + name)
     matchList = json.loads(connection.getresponse().read().decode())
-    print(matchList)
+
     if matchList["count"] == 0:
         print("NO FOUND TODO ALERT MESSAGE")
         return render_template('homeSearch/index.html', notfound="No Matches found")
-    print(matchList)
-    print(len(matchList["results"]))
-    print("Total found count", len(matchList["results"]))
+
+    #Result list
     customizedList = []
-    for i in matchList["results"]:
-        customizedList.append(rowItem.ListItem(i))
+    threads = [gevent.spawn(rowItem.ListItem, i) for i in matchList["results"]]
+    gevent.joinall(threads)
+    [customizedList.append(thread.value) for thread in threads]
     endTime = time.time()
 
     print("Over all Execution time : ", endTime - startTime)
