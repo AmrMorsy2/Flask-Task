@@ -40,7 +40,7 @@ class ListItem(object):
         else:
             totalAge = totalAge / len(speciesList)
         if len(speciesStr) == 0:
-            speciesStr = "Unkown"
+            speciesStr = "Unknown"
         else:
             speciesStr = speciesStr[2:]
         logging.info("getSpeciesNameSpan Execution time : %s", time.time() - startTime)
@@ -49,7 +49,7 @@ class ListItem(object):
     def getHomePlanet(self, homeWorld):
         startTime = time.time()
         if homeWorld is None or len(homeWorld) == 0:
-            return "Unkown"
+            return "Unknown"
         connection.request('GET', homeWorld)
         planet = json.loads(connection.getresponse().read().decode())["name"]
         logging.info("getHomePlanet Execution time : %s", time.time() - startTime)
