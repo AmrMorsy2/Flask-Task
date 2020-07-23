@@ -24,7 +24,7 @@
   ```
       python test_app.py
   ```
-    cosist of 2 test functions
+consist of 2 test functions
   ```
       test_search() => Validate that swapi returns a response
       test_ListItem() => Validate that all records in the customized list has value
