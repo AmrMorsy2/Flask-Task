@@ -20,7 +20,7 @@
   ```
 
   ## Test
-    Test can by run by the following command 
+Test can by run by the following command 
   ```
       python test_app.py
   ```
