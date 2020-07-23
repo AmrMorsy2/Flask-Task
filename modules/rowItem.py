@@ -2,12 +2,14 @@ import time
 import http.client
 import json
 import concurrent.futures
+import logging
 
 connection = http.client.HTTPSConnection("swapi.dev")
 
-## Custom class for the required display items
 class ListItem(object):
-    # decorators to be applied here
+    """
+    Custom class for the required display parameters
+    """
     def __init__(self, character):
         self.name = character["name"]
         self.gender = character["gender"]
@@ -41,8 +43,7 @@ class ListItem(object):
             speciesStr = "Unkown"
         else:
             speciesStr = speciesStr[2:]
-
-        print("getSpeciesNameSpan Execution time : ", time.time() - startTime)
+        logging.info("getSpeciesNameSpan Execution time : %s", time.time() - startTime)
         return speciesStr, totalAge
 
     def getHomePlanet(self, homeWorld):
@@ -51,7 +52,7 @@ class ListItem(object):
             return "Unkown"
         connection.request('GET', homeWorld)
         planet = json.loads(connection.getresponse().read().decode())["name"]
-        print("getHomePlanet Execution time : ", time.time() - startTime)
+        logging.info("getHomePlanet Execution time : %s", time.time() - startTime)
         return planet
 
     def getMoviesList(self, moviesList):
@@ -62,5 +63,5 @@ class ListItem(object):
             curMovie = json.loads(connection.getresponse().read().decode())["title"]
             movielist.append(curMovie)
 
-        print("getMoviesList Execution time : ", time.time() - startTime)
+        logging.info("getMoviesList Execution time : %s", time.time() - startTime)
         return movielist
